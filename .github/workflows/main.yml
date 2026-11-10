@@ -1,0 +1,87 @@
+name: Download PDFs
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download PDFs
+        run: |
+          mkdir -p TS_Class10_Complete
+          cd TS_Class10_Complete
+          : > ../failed.txt
+          while read -r name url; do
+            [ -z "$name" ] && continue
+            if curl -fL -sS --retry 2 -m 180 -A "Mozilla/5.0" -o "$name" "$url" && head -c 4 "$name" | grep -q '%PDF'; then
+              echo "OK   $name"
+            else
+              echo "FAIL $name $url" | tee -a ../failed.txt
+              rm -f "$name"
+            fi
+          done <<'LIST'
+          Textbook_Maths_EM.pdf https://cdn1.byjus.com/wp-content/uploads/2021/09/TS-SCERT-Class-10-Maths-Textbook-in-English-Medium.pdf
+          Textbook_Physics_EM.pdf https://cdn1.byjus.com/wp-content/uploads/2021/09/TS-SCERT-Class-10-Physics-Textbook-in-English-Medium.pdf
+          Textbook_Biology_EM.pdf https://cdn1.byjus.com/wp-content/uploads/2021/09/TS-SCERT-Class-10-Biology-Textbook-in-English-Medium.pdf
+          Textbook_Social_EM.pdf https://cdn1.byjus.com/wp-content/uploads/2021/09/TS-SCERT-Class-10-Social-Science-Textbook-in-English-Medium.pdf
+          Textbook_Environmental_Education_EM.pdf https://www.studiestoday.com/sites/default/files/books/telangana/Telangana-Board-SCERT-Class-10-Environmental-Education-Book-English-Medium.pdf
+          Textbook_English.pdf https://cdn1.byjus.com/wp-content/uploads/2021/09/TS-SCERT-Class-10-English-Textbook.pdf
+          Textbook_Telugu_FL.pdf https://cdn1.byjus.com/wp-content/uploads/2021/09/TS-SCERT-Class-10-Telugu-First-Language-Textbook.pdf
+          Textbook_Hindi_SL.pdf https://cdn1.byjus.com/wp-content/uploads/2021/09/TS-SCERT-Class-10-Hindi-Second-Language-Textbook.pdf
+          2015_Maths_P1_Solved.pdf https://cdn1.byjus.com/wp-content/uploads/2020/06/tl-board-ssc-class-10-maths-2015-question-paper-1-with-sol.pdf
+          2015_Physical_Science_P1_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/12/15/telangana-ssc-annual-exam-question-paper-march-2015-general-science-paper-i-english-version.pdf
+          2015_Biology_P2_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/12/15/telangana-ssc-annual-exam-question-paper-march-2015-general-science-paper-ii-english-version.pdf
+          2016_Maths_P1.pdf https://cdn1.byjus.com/wp-content/uploads/2020/06/Telangana-Class-10-Maths-Paper-1-Previous-Year-Paper-March-2016.pdf
+          2016_Physical_Science_P1_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/12/15/telangana-10th-annual-exam-question-paper-2016-genaral-science-paper-i-english-medium.pdf
+          2016_Biology_P2_PartA_B.pdf https://cdn1.byjus.com/wp-content/uploads/2020/06/Telangana-Class-10-Science-Paper-II-Previous-Year-Paper-2016.pdf
+          2016_Social_P1_PartA_B.pdf https://cdn1.byjus.com/wp-content/uploads/2020/01/Telangana-Board-Class-10-Social-Science-Paper-I-Previous-Year-Paper-2016.pdf
+          2016_Social_P1_Solutions.pdf https://cdn1.byjus.com/wp-content/uploads/2020/12/Telangana-Board-Class-10-Social-Science-Question-Paper-2016-Paper-1-Solutions-PDF.pdf
+          2016_Social_P2_PartA_B.pdf https://cdn1.byjus.com/wp-content/uploads/2020/01/Telangana-Board-Class-10-Social-Science-Paper-II-Previous-Year-Paper-2016.pdf
+          2016_Social_P2_Solutions.pdf https://cdn1.byjus.com/wp-content/uploads/2020/12/Telangana-Board-Class-10-Social-Science-Question-Paper-2016-Paper-2-Solutions-PDF.pdf
+          2016_English_P2_PartA_B.pdf https://cdn1.byjus.com/wp-content/uploads/2021/01/Telangana-Board-Class-10-English-Question-Paper-II-2016.pdf
+          2017_Maths_P1_Solved_PartA_B.pdf https://cdn1.byjus.com/wp-content/uploads/2020/06/tl-board-ssc-class-10-maths-2017-question-paper-1-with-sol.pdf
+          2017_Physical_Science_P1_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/12/15/telangana-10th-annual-exam-question-paper-2017-genaral-science-paper-i-english-medium.pdf
+          2017_Physical_Science_P1_Solved.pdf https://cdn1.byjus.com/wp-content/uploads/2020/11/Telangana-Board-Class-10-Science-Part-I-2017-Question-Paper-with-Solutions.pdf
+          2017_English_P1_PartA_B.pdf https://cdn1.byjus.com/wp-content/uploads/2021/01/Telangana-Board-Class-10-English-Question-Paper-I-2017.pdf
+          2018_Maths_P1.pdf https://static.collegedekho.com/media/uploads/2023/12/15/ts-10th-class-maths-paper-i-em-2018-qp.pdf
+          2018_Maths_P2_Solved.pdf https://www.vedantu.com/content-files-downloadable/telangana-board/tsbse-previous-year-question-paper-class-10-maths-2018.pdf
+          2018_Biology_P2.pdf https://cdn1.byjus.com/wp-content/uploads/2020/06/Telangana-Class-10-Science-Paper-II-Previous-Year-Paper-2018.pdf
+          2018_English_P2_PartA_B.pdf https://static.collegedekho.com/media/uploads/2022/08/17/ts-10th-class-english-paper-ii-2018-qp.pdf
+          2019_Maths_P1_Solved.pdf https://cdn1.byjus.com/wp-content/uploads/2020/06/tl-board-ssc-class-10-maths-2019-question-paper-1-with-sol.pdf
+          2019_Physical_Science_P1_PartA_B.pdf https://cdn1.byjus.com/wp-content/uploads/2020/01/Telangana-Board-Class-10-Science-Paper-1-Previous-Year-Paper-2019.pdf
+          2019_Biology_P2.pdf https://cdn1.byjus.com/wp-content/uploads/2020/01/Telangana-Board-Class-10-Science-Paper-2-Previous-Year-Paper-2019.pdf
+          2019_Social_P1.pdf https://cdn1.byjus.com/wp-content/uploads/2020/01/Telangana-Board-Class-10-Social-Science-Paper-I-Previous-Year-Paper-2019EM.pdf
+          2019_Social_P2.pdf https://cdn1.byjus.com/wp-content/uploads/2020/01/Telangana-Board-Class-10-Social-Science-Paper-II-Previous-Year-Paper-2019EM.pdf
+          2019_Social_P2_Solutions.pdf https://cdn1.byjus.com/wp-content/uploads/2020/12/Telangana-Board-Class-10-Social-Science-Question-2019-Paper-2-Solutions-PDF.pdf
+          2019_English_P1_PartA_B.pdf https://cdn1.byjus.com/wp-content/uploads/2021/01/Telangana-Board-Class-10-English-Question-Paper-I-2019.pdf
+          2019_English_P2_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/12/18/telangana-2019-english-question-paper-2.pdf
+          2020_English_P1_Model_PartA_B.pdf https://www.manabadi.co.in/sscqp/ManabadiQP/134AP%20SSC%20English%20Paper-1%202020%20Guess%20Paper.pdf
+          2021_Maths_Official_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2022/08/17/maths-ssc-may-2021-mathematics-model-paper.pdf
+          2021_Physical_Science_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2022/05/16/telangana-10th-physical-science-mqp-em.pdf
+          2021_Biology_MQP_PartA_B.pdf https://img.collegedunia.com/public/college_data/images/entrance/sample_paper/1670564953Bio.%20Sci.%20EM.pdf
+          2021_Combined_Science_MQP.pdf https://static.collegedekho.com/media/uploads/2022/12/15/19-e-20-e.pdf
+          2021_Social_Studies_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2022/05/16/telangana-10th-social-studies-mqp-em.pdf
+          2021_English_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2022/05/16/telangana-10th-english-mqp-em-tm.pdf
+          2021_Telugu_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2022/07/14/01t-02t.pdf
+          2021_Hindi_MQP_PartA_B.pdf https://img.collegedunia.com/public/college_data/images/entrance/sample_paper/1670565602Hindi%202nd%20Lang.pdf
+          2022_23_Physical_Science_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/01/16/ts-ssc-mqp-physical-science-em.pdf
+          2022_23_Biology_Board_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/01/16/ts-ssc-mqp-biological-science-em.pdf
+          2022_23_Social_Board_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/01/16/ts-ssc-mqp-social-studies-em.pdf
+          2022_23_Telugu_03T_Board_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/01/16/ts-ssc-mqp-composite-paper-1-tm.pdf
+          2022_23_Hindi_09H_Board_MQP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/01/16/ts-ssc-mqp-second-language-hm.pdf
+          2023_Science_Final_Exam_QP.pdf https://static.collegedekho.com/media/uploads/2023/04/10/ts-ssc-science-question-paper-2023.pdf
+          2024_Maths_Final_Exam_QP.pdf https://www.adda247.com/jobs/wp-content/uploads/sites/2/2024/03/26130238/TS-SSC-Maths-Public-Question-Paper-2024-PDF.pdf
+          2024_Biology_Final_Exam_PartA_B.pdf https://static.collegedekho.com/media/uploads/2023/11/08/general-science-paper-ii-2024.pdf
+          2025_Social_Repeated_Qs.pdf https://static.collegedekho.com/media/uploads/2025/03/31/ts-ssc-social-2025-most-repeated-questions.pdf
+          2026_Social_EM_QP_PartA_B.pdf https://static.collegedekho.com/media/uploads/2026/02/26/tg-tenth-social-em-2026-qp.pdf
+          LIST
+          exit 0
+      - name: Commit results
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A
+          git commit -m "Add PDFs" || echo "nothing to commit"
+          git push
